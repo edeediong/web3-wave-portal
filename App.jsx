@@ -1,11 +1,7 @@
-import React, { useEffect } from "react";
-import { ethers } from "ethers";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 const App = () => {
-    /*
-  * Just a state variable we use to store our user's public wallet.
-  */
   const [currentAccount, setCurrentAccount] = useState("");
   
   const checkIfWalletIsConnected = async () => {
@@ -15,6 +11,7 @@ const App = () => {
       if (!ethereum) {
         console.log("Make sure you have metamask!");
         return;
+      } else {
         console.log("We have the ethereum object", ethereum);
       }
 
@@ -26,7 +23,7 @@ const App = () => {
       if (accounts.length !== 0) {
         const account = accounts[0];
         console.log("Found an authorized account:", account);
-        setCurrentAccount(account)
+        setCurrentAccount(account);
       } else {
         console.log("No authorized account found")
       }
@@ -35,9 +32,29 @@ const App = () => {
     }
   }
 
-  /*
-  * This runs our function when the page loads.
+  /**
+  * Implement your connectWallet method here
   */
+  const connectWallet = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (!ethereum) {
+        alert("Get MetaMask!");
+        return;
+      }
+
+      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
+
+      console.log("Connected", accounts[0]);
+      setCurrentAccount(accounts[0]);
+    } catch (error) {
+      console.log(error)
+    }
+
+    
+  }
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -46,7 +63,7 @@ const App = () => {
     <div className="mainContainer">
       <div className="dataContainer">
         <div className="header">
-        🤓 Hey there Spotify Lover!
+        👋 Hey there!
         </div>
 
         <div className="bio">
@@ -56,6 +73,15 @@ const App = () => {
         <button className="likeButton" onClick={null}>
           Like This Page 👍🏼
         </button>
+
+        {/*
+        * If there is no currentAccount render this button
+        */}
+        {!currentAccount && (
+          <button className="likeButton" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
       </div>
     </div>
   );
