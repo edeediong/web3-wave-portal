@@ -9,7 +9,7 @@ const main = async () => {
     const musicLover = await musicLoverFactory.deploy(); // creates a unique/fresh eth network for the contract everytime it's executed
     await musicLover.deployed(); // Wait till contract is deployed
 
-    console.log("Contract deployed to:", musicLover.address); // address of deployed contract
+    console.log("MusicLover address:", musicLover.address); // address of deployed contract
 }
 
 const runMain = async () => {
