@@ -49,6 +49,15 @@ const App = () => {
             const signer = provider.getSigner();
             const musicLoverContract = new ethers.Contract(contractAddress, contractABI, signer);
     
+            /*
+            * Execute the actual wave from your smart contract
+            */
+            const likeTxn = await musicLoverContract.like();
+            console.log("Mining...", likeTxn.hash);
+    
+            await likeTxn.wait();
+            console.log("Mined -- ", likeTxn.hash);
+    
             let count = await musicLoverContract.getTotalLikes();
             console.log("Retrieved total like count...", count.toNumber());
           } else {
@@ -77,7 +86,7 @@ const App = () => {
         I am Eddie and I do Software Engineering (mostly Infrastructure stuff) at Tellie. I also love Spotify!! Connect your Ethereum wallet and drop a like!
         </div>
 
-        <button className="likeButton" onClick={null}>
+        <button className="likeButton" onClick={like}>
           Like This Page 👍🏼
         </button>
 
