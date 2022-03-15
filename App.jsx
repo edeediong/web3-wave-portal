@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import "./App.css";
+import abi from "./utils/MusicLover.json";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
+  const contractAddress = "0x7316225a2fC73A58a8353CdeA3d91E0b00ce8900";
+  const contractABI = abi.abi;
   
   const checkIfWalletIsConnected = async () => {
     try {
@@ -36,20 +40,23 @@ const App = () => {
   * Implement your connectWallet method here
   */
   const connectWallet = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (!ethereum) {
-        alert("Get MetaMask!");
-        return;
-      }
-
-      const accounts = await ethereum.request({ method: "eth_requestAccounts" });
-
-      console.log("Connected", accounts[0]);
-      setCurrentAccount(accounts[0]);
-    } catch (error) {
-      console.log(error)
+    const like = async () => {
+        try {
+          const { ethereum } = window;
+    
+          if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const musicLoverContract = new ethers.Contract(contractAddress, contractABI, signer);
+    
+            let count = await musicLoverContract.getTotalLikes();
+            console.log("Retrieved total like count...", count.toNumber());
+          } else {
+            console.log("Ethereum object doesn't exist!");
+          }
+        } catch (error) {
+          console.log(error);
+        }
     }
 
     
